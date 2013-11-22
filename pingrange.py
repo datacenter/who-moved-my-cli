@@ -15,7 +15,10 @@
 # limitations under the License.
 #
 
-# This script gives
+# This script will accept as a parameter an IP or range of IP address
+# and attempt to ping them all from the switch it is running on
+# Ranges can be specified in any octet, e.g., 
+# python pingrange.py 10.1.0-1.0-255 will ping 10.1.0.0/23
 #
 # 
 import re

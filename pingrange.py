@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (C) 2013 Cisco Systems Inc.
+# Copyright (C) 2014 Cisco Systems Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,7 +22,10 @@
 #
 #
 import re
-import cli
+try:
+	from cli import cli
+except ImportError:
+	from cisco import cli
 from argparse import ArgumentParser
 
 def expandrange(rangefunc):
@@ -46,5 +49,5 @@ args = parser.parse_args()
 targets = expandrange(args.ip)
 
 for ip in targets:
-    m = re.search('([0-9\.]+)% packet loss', cli.cli('ping %s %s' % (ip, ' '.join(args.options))))
+    m = re.search('([0-9\.]+)% packet loss', cli('ping %s %s' % (ip, ' '.join(args.options))))
     print('%s - %s' % (ip, 'UP' if float(m.group(1)) == 0.0 else 'DOWN'))

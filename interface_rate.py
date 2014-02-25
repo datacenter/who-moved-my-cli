@@ -18,11 +18,17 @@
 # easy to read list format on NX-OS platforms.  To use:
 # 
 # 		1. Copy script to NX-OS switch bootflash:
-# 		2. Execute using 'python bootflash:interface_rate.py
+# 		2. Execute using:
+# 				# source easy-ofa.py <package>
+# 			   				- or -
+# 				# python bootflash:easy-ofa.py <package>
 # 
 
 from __future__ import division
-import cisco
+try:
+	from cli import cli
+except ImportError:
+	from cisco import cli
 import sys
 import xml.etree.cElementTree as ET
 
@@ -31,7 +37,7 @@ print
 print 'Collecting and processing interface statistics ...'
 print 
 sys.stdout.flush()
-raw = cisco.cli('show interface | xml | exclude "]]>]]>"', False)[1]
+raw = cli('show interface | xml | exclude "]]>]]>"', False)[1]
 
 # Load and parse XML
 tree = ET.ElementTree(ET.fromstring(raw))

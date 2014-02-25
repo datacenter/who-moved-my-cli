@@ -19,9 +19,9 @@
 # 
 # 		1. Copy script to NX-OS switch bootflash:
 # 		2. Execute using:
-# 				# source easy-ofa.py <package>
+# 				# source interface_rate.py
 # 			   				- or -
-# 				# python bootflash:easy-ofa.py <package>
+# 				# python bootflash:interface_rate.py
 # 
 
 from __future__ import division

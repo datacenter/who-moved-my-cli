@@ -32,6 +32,16 @@ except ImportError:
 import sys
 import xml.etree.cElementTree as ET
 
+# Workaround for cli command inconsistency -- if cli takes one argument, make it take two, with the second being a dummy, returned as an array
+def cli_decorator(target_function):
+	def wrapper(cmd, dummyBool):
+		return [None,target_function(cmd)]
+	return wrapper
+import inspect
+if len(inspect.getargspec(cli)) == 4:
+	cli = cli_decorator(cli)
+
+
 # Get interface information in XML format
 print 
 print 'Collecting and processing interface statistics ...'

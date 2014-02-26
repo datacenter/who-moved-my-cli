@@ -16,36 +16,39 @@
 #
 # This script prints interface throughput/packet rate statistics in an
 # easy to read list format on NX-OS platforms.  To use:
-# 
+#
 # 		1. Copy script to NX-OS switch bootflash:
 # 		2. Execute using:
-# 				# source interface_rate.py
+# source interface_rate.py
 # 			   				- or -
-# 				# python bootflash:interface_rate.py
-# 
+# python bootflash:interface_rate.py
+#
 
 from __future__ import division
 try:
-	from cli import cli
+    from cli import cli
 except ImportError:
-	from cisco import cli
+    from cisco import cli
 import sys
 import xml.etree.cElementTree as ET
 
-# Workaround for cli command inconsistency -- if cli takes one argument, make it take two, with the second being a dummy, returned as an array
+# Workaround for cli command inconsistency -- if cli takes one argument,
+# make it take two, with the second being a dummy, returned as an array
+
+
 def cli_decorator(target_function):
-	def wrapper(cmd, dummyBool):
-		return [None,target_function(cmd)]
-	return wrapper
+    def wrapper(cmd, dummyBool):
+        return [None, target_function(cmd)]
+    return wrapper
 import inspect
 if len(inspect.getargspec(cli)) == 4:
-	cli = cli_decorator(cli)
+    cli = cli_decorator(cli)
 
 
 # Get interface information in XML format
-print 
+print
 print 'Collecting and processing interface statistics ...'
-print 
+print
 sys.stdout.flush()
 raw = cli('show interface | xml | exclude "]]>]]>"', False)[1]
 
@@ -58,23 +61,22 @@ if_manager = '{http://www.cisco.com/nxos:1.0:if_manager}'
 table = "{0:16}{1:9}{2:9}{3:9}{4:9}{5:9}{6:9}{7:9}"
 print '---------------------------------------------------------------------------'
 print table.format("Port", "Intvl", "Rx Mbps", "Rx %", "Rx pps", "Tx Mbps", "Tx %", "Tx pps")
-print '---------------------------------------------------------------------------'	
+print '---------------------------------------------------------------------------'
 for i in data.iter(if_manager + 'ROW_interface'):
-	try:
-		interface = i.find(if_manager + 'interface').text
-		bw = int(i.find(if_manager + 'eth_bw').text)
-		rx_intvl = i.find(if_manager + 'eth_load_interval1_rx').text
-		rx_bps = int(i.find(if_manager + 'eth_inrate1_bits').text)
-		rx_mbps = round((rx_bps / 1000000), 1)
-		rx_pcnt = round((rx_bps / 1000) * 100 / bw, 1)
-		rx_pps = i.find(if_manager + 'eth_inrate1_pkts').text
-		tx_intvl = i.find(if_manager + 'eth_load_interval1_tx').text
-		tx_bps = int(i.find(if_manager + 'eth_outrate1_bits').text)
-		tx_mbps = round((tx_bps / 1000000), 1)
-		tx_pcnt = round((tx_bps / 1000) * 100 / bw, 1)
-		tx_pps = i.find(if_manager + 'eth_outrate1_pkts').text
-		print table.format(interface, rx_intvl + '/' + tx_intvl, str(rx_mbps), str(rx_pcnt) + '%', rx_pps, str(tx_mbps), str(tx_pcnt) + '%', tx_pps)
-		sys.stdout.flush()
-	except AttributeError:
-		pass
-	
+    try:
+        interface = i.find(if_manager + 'interface').text
+        bw = int(i.find(if_manager + 'eth_bw').text)
+        rx_intvl = i.find(if_manager + 'eth_load_interval1_rx').text
+        rx_bps = int(i.find(if_manager + 'eth_inrate1_bits').text)
+        rx_mbps = round((rx_bps / 1000000), 1)
+        rx_pcnt = round((rx_bps / 1000) * 100 / bw, 1)
+        rx_pps = i.find(if_manager + 'eth_inrate1_pkts').text
+        tx_intvl = i.find(if_manager + 'eth_load_interval1_tx').text
+        tx_bps = int(i.find(if_manager + 'eth_outrate1_bits').text)
+        tx_mbps = round((tx_bps / 1000000), 1)
+        tx_pcnt = round((tx_bps / 1000) * 100 / bw, 1)
+        tx_pps = i.find(if_manager + 'eth_outrate1_pkts').text
+        print table.format(interface, rx_intvl + '/' + tx_intvl, str(rx_mbps), str(rx_pcnt) + '%', rx_pps, str(tx_mbps), str(tx_pcnt) + '%', tx_pps)
+        sys.stdout.flush()
+    except AttributeError:
+        pass

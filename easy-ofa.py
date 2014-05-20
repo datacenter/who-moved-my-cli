@@ -37,8 +37,8 @@ import time
 import cisco
 
 supported = [
-    "Nexus3016", "Nexus3064", "Nexus3048", "Nexus3132", "Nexus 3548",
-    "Nexus5548", "Nexus5596", "Nexus 6001", "Nexus 6004"
+    "Nexus3016", "Nexus3064", "Nexus3048", "Nexus3132", "Nexus5548", 
+    "Nexus5596", "Nexus 6001", "Nexus 6004"
     ]
 
 # Handle cisco.cli() type inconsistencies

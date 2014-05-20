@@ -18,8 +18,10 @@
 # This script installs and configures the Cisco Plug-in for OpenFlow.  Copy
 # the script to bootflash: and execute using:
 # 
+# # term len 0
 # # source easy-ofa.py <package>
 # 			   - or -
+# # term len 0
 # # python bootflash:easy-ofa.py <package>
 # 
 # Additional help is available using the --help option.
@@ -28,14 +30,15 @@
 import argparse
 import os
 import re
+import socket
 import sys
 import time
 
 import cisco
 
 supported = [
-    "Nexus3016", "Nexus3064", "Nexus3048", "Nexus3132", "Nexus5548", 
-    "Nexus5596", "Nexus6001", "Nexus6004"
+    "Nexus3016", "Nexus3064", "Nexus3048", "Nexus3132", "Nexus 3548",
+    "Nexus5548", "Nexus5596", "Nexus 6001", "Nexus 6004"
     ]
 
 # Handle cisco.cli() type inconsistencies
@@ -53,7 +56,7 @@ sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
 def max_flows(platform):
     print "Tuning switch TCAM for max flows ..."
-    if (platform == "Nexus6001" or platform == "Nexus6004"):
+    if (platform == "Nexus 6001" or platform == "Nexus 6004"):
         cli("conf t")
         cli("hardware profile tcam resource template vacl 0")
         cli("hardware profile tcam resource template ifacl 3520")
@@ -96,6 +99,14 @@ def expand(links):
             expanded_links.append(normalize(int_range[0]))
     return expanded_links
 
+def af_check(ip):
+    try:
+        socket.inet_pton(socket.AF_INET, ip)
+    except socket.error:
+        return False
+    else:
+        return True
+    
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("package", help = 
@@ -106,21 +117,24 @@ def main():
     args = parser.parse_args()
 
     ver = cli("show version")
-    platform = re.search(r"(Hardware\s*cisco\s)([^\s]+)", ver).group(2)
+    platform = re.search(r"(Hardware\s*cisco\s)(.*)(?=\sC)", ver).group(2)
     if platform not in supported:
-        print "ERROR: Unsupported hardware platform."
+        print "ERROR: Unsupported hardware platform. Exiting ..."
         sys.exit(1)
 
     if args.maxflows:
         max_flows(platform)
 
-    # raw_input() doesn"t work reliably across all platforms, so ...
+    # raw_input() doesn't work reliably across all platforms, so ...
     sys.stdout.write("Interfaces (seperated by space) to use for OpenFlow: ")
     interfaces = sys.stdin.readline()
 
-    # TODO: Input validation ...
     sys.stdout.write("Enter the OpenFlow controller IP address: ")
     controller = sys.stdin.readline().rstrip('\n')
+    while not af_check(controller):
+        print '\nERROR: Invalid IP address.  Please enter a valid IPv4 address ...'
+        sys.stdout.write("Enter the OpenFlow controller IP address: ")
+        controller = sys.stdin.readline().rstrip('\n')
 
     sys.stdout.write("Enter vrf (If no input, vrf 'default' is used): ")
     vrf = sys.stdin.readline().rstrip('\n')

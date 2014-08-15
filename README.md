@@ -28,6 +28,9 @@ Please submit a pull request with your contribution and we will review, provide
 feedback to you and if everything looks good, we'll merge it!
 
 
+Descriptions
+----
+
 | Script               | Description                                                                                                                                                                                                                                                                                                                | 
 |----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | bcmnxosintcompare.py | Script demonstrating how to programmatically interface with the broadcom shell on a Nexus 9000 |

@@ -31,6 +31,7 @@ import cobra.mit.session
 import cobra.mit.request
 import cobra.model.fv
 import cobra.model.pol
+import cobra.model.infra
 from cobra.internal.codec.xmlcodec import toXMLStr
 import ConfigParser
 import argparse
@@ -105,9 +106,11 @@ class EPGasVLAN(object):
         list of vlans configured. this can be defined similarly to the
         vlan range, with single entries or list entries for ranges
         """
-        infraInfra = self.md.lookupByClass('infraInfra').pop()
+        topMo = cobra.model.pol.Uni('')
+        infraInfra = cobra.model.infra.Infra(topMo)
+
         physDomP = self.md.lookupByClass(
-            'physDomP', propFilter='eq(physDomP.name,"phys")').pop()
+            'physDomP', propFilter='eq(physDomP.name,"phys")')[0]
 
         # associate default AEP with phys domain
         infraAttEntityP = cobra.model.infra.AttEntityP(
@@ -171,7 +174,7 @@ class EPGasVLAN(object):
         successfulnodes = []
         leafDn = {}
         physDomP = self.md.lookupByClass(
-            'physDomP', propFilter='eq(physDomP.name,"phys")').pop()
+            'physDomP', propFilter='eq(physDomP.name,"phys")')[0]
         topMo = cobra.model.pol.Uni('')
         fvTenant = cobra.model.fv.Tenant(topMo, name=tenant)
         fvCtx = cobra.model.fv.Ctx(

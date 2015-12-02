@@ -8,7 +8,7 @@ automate these tasks.
 Supported Hardware
 ----
 Unless otherwise stated, all of these scripts are supported on Nexus 9000 and
-have been tested with NX-OS 6.1(2)I2(1). Running on other platforms may require
+have been tested with NXOS: version 7.0(3)I2(2). Running on other platforms may require
 modification to the code.
 
 Installation

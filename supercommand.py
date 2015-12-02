@@ -124,6 +124,7 @@ def getarpentry(ip=None, vrf='all'):
 
     # flatten out the data received from show ip arp into a list of dicts
     arpentries = []
+    # print "TITU   :  ", arpoutput
     for rowadj in rowadjlist:
         if isinstance(rowadj, dict):
             arpentries.append(rowadj)
@@ -133,6 +134,7 @@ def getarpentry(ip=None, vrf='all'):
     arplist = []
     for arp in arpentries:
         try:
+            # print "TITU Int : ", arp['intf-out']
             arplist.append(
                 [arp['ip-addr-out'], arp['time-stamp'], arp['mac'], arp['intf-out']])
         except KeyError:
@@ -159,6 +161,9 @@ def getmacentry(mac, vlanfilter=None):
             macentries.extend(macaddr)
 
     entries = []
+    # print "TITU:mac,   ", mac
+    # print "TITU: ", macaddroutput
+    # print "TITU", macentries
     for macaddr in macentries:
         vlan = macaddr['disp_vlan']
         mac = macaddr['disp_mac_addr']
@@ -167,6 +172,7 @@ def getmacentry(mac, vlanfilter=None):
         secure = macaddr['disp_is_secure']
         ntfy = macaddr['disp_is_ntfy']
         port = macaddr['disp_port']
+        # print "TITU", port
 
         if vlanfilter and vlan != vlanfilter:
             continue
@@ -250,14 +256,19 @@ def main():
             topdepth = depth
             for macentry in macentries:
                 depth = topdepth
+                # print "TITU", macentry
                 vlan, mac, entrytype, age, secure, ntfy, port, parentport = macentry
+                # print "TITU VLAN : ", vlan
                 if len(macentries) > 1:
                     output += [' ' * depth +
                                'Port Channel {0} member {1}'.format(parentport, port)]
                     depth += 2
                 output += [' ' * depth + 'Local interface: {0}'.format(port)]
                 output += [' ' * depth + 'VLAN: {0}'.format(vlan)]
-                cdp = getcdpentry(port)
+                if 'Eth' in port.lower() or 'mgmt' in port.lower():
+                    cdp = getcdpentry(port)
+                else:
+                    cdp = None
                 if cdp:
                     output += [' ' * depth +
                                'CDP Platform: {0}'.format(cdp['platform_id'])]

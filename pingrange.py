@@ -23,9 +23,9 @@
 #
 import re
 try:
-	from cli import cli
+        from cli import cli
 except ImportError:
-	from cisco import cli
+        from cisco import cli
 from argparse import ArgumentParser
 
 def expandrange(rangefunc):
@@ -51,3 +51,4 @@ targets = expandrange(args.ip)
 for ip in targets:
     m = re.search('([0-9\.]+)% packet loss', cli('ping %s %s' % (ip, ' '.join(args.options))))
     print('%s - %s' % (ip, 'UP' if float(m.group(1)) == 0.0 else 'DOWN'))
+

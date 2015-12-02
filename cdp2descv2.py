@@ -40,3 +40,4 @@ for key, value in cdp_dict.items():
     if 'port_id' in value and 'device_id' in value and 'intf_id' in value:
         cli.cli('conf t ; interface ' + value[
                 'intf_id'] + ' ; description ' + value['device_id'] + ' ' + value['port_id'])
+

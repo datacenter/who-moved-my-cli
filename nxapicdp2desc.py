@@ -20,13 +20,14 @@
 # The workflow will gather details from the CDP database and generate
 # interface descriptions based on the neighbor name and remote interface
 # and then print out the configuration needed to apply these descriptions.
-# This version executes via the NX-API, and will simply print out the 
+# This version executes via the NX-API, and will simply print out the
 # generated configuration output, as opposed to applying it
 #
 
 # Define your list of switches here, with their IP addresses and credentials
 switches = [
-    ['10.0.0.1', 'admin', 'cisco'],
+    ['172.31.216.131', 'admin', 'cisco123'],
+    ['172.31.216.131', 'admin', 'cisco123']
 ]
 
 
@@ -36,7 +37,7 @@ import json
 sys.path.append("./cisco")
 sys.path.append("./utils")
 
-onbox = True
+onbox = False
 try:
     from cli import clid, cli
 except ImportError:
@@ -48,6 +49,8 @@ except ImportError:
         print 'Script is unsupported on this platform'
         raise
 
+from nxapi_utils import NXAPITransport
+from cisco.interface import Interface
 def findkey(dct, key, value=None):
     """This method recursively searches through a JSON dict for a key name
     and returns a list of the matching results
@@ -114,3 +117,4 @@ for switch in switches:
                 **fields)
             print(cmd)
             cli(cmd)
+

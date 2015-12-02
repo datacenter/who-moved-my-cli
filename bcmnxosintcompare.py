@@ -66,10 +66,14 @@ for mod, interfaces in intmap.items():
                     bcmmap[interface['Unit']].append(d)
         else:
             print 'found ' + interface['Unit']
-        for k, v in bcmmap[interface['Unit']][bcmPortIndex].items():
-            if k not in interface:
-                interface[k] = v
+        try:
+            for k, v in bcmmap[interface['Unit']][bcmPortIndex].items():
+                if k not in interface:
+                    interface[k] = v
+        except IndexError:
+            break
 
 for mod, interfaces in intmap.items():
     for interface in interfaces:
-        print 'interface Eth%s/%s : BCM %s/%s/%s :: %s : %s' % (mod, interface['interface'], mod, interface['Unit'], interface['bcmPort'], interface['Status'], interface['bcmEnalink'])
+        if interface.get('interface') and interface.get('Unit') and interface.get('bcmPort') and interface.get('Status') and interface.get('bcmEnalink'):
+            print 'interface Eth%s/%s : BCM %s/%s/%s :: %s : %s' % (mod, interface['interface'], mod, interface['Unit'], interface['bcmPort'], interface['Status'], interface['bcmEnalink'])

@@ -17,10 +17,10 @@
 # This script prints interface throughput/packet rate statistics in an
 # easy to read list format on NX-OS platforms.  To use:
 #
-# 		1. Copy script to NX-OS switch bootflash:
-# 		2. Execute using:
+#               1. Copy script to NX-OS switch bootflash:
+#               2. Execute using:
 # source interface_rate.py
-# 			   				- or -
+#                                                       - or -
 # python bootflash:interface_rate.py
 #
 
@@ -78,3 +78,4 @@ for i in data.iter(if_manager + 'ROW_interface'):
         sys.stdout.flush()
     except AttributeError:
         pass
+
